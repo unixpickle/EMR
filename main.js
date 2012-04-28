@@ -1,4 +1,5 @@
 var stage = null;
+var currentCharge = null;
 
 function loadCharges () {
 	var canvas = document.getElementById('canvas');
@@ -9,7 +10,6 @@ function loadCharges () {
 }
 
 function mouseDown (event) {
-	console.log('this is a test');
 	stage.mouseDown(event);
 }
 
@@ -19,4 +19,24 @@ function mouseMove (event) {
 
 function mouseUp (event) {
 	stage.mouseUp(event);
+}
+
+function editCharge (aCharge) {
+	currentCharge = aCharge;
+	document.getElementById('controls').style.visibility = 'visible';
+	document.getElementById('charge_input').value = aCharge.charge + '';
+}
+
+function deleteCharge () {
+	stage.removeCharge(currentCharge);
+	stage.draw();
+	currentCharge = null;
+	document.getElementById('controls').style.visibility = 'hidden';
+}
+
+function doneEdit () {
+	currentCharge.charge = parseInt(document.getElementById('charge_input').value);
+	currentCharge = null;
+	stage.draw();
+	document.getElementById('controls').style.visibility = 'hidden';
 }

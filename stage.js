@@ -38,7 +38,7 @@ Stage.prototype.shouldDrawForceArrow = function (point) {
 
 Stage.prototype.draw = function () {
 	var ctx = this.canvas.getContext('2d');
-	ctx.fillStyle = '#000';
+	ctx.fillStyle = '#630';
 	ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 	
 	// draw force arrows
@@ -68,7 +68,6 @@ Stage.prototype.drawForceArrow = function (point, ctx) {
 	var vec = this.netForceOnPoint(point);
 	var startPoint = new Point(point.x - vec.x / 2, point.y - vec.y / 2);
 	var endPoint = new Point(point.x + vec.x / 2, point.y + vec.y / 2);
-
 
 	ctx.beginPath();
 	ctx.moveTo(startPoint.x, startPoint.y);
@@ -127,16 +126,33 @@ Stage.prototype.mouseDrag = function (event) {
 }
 
 Stage.prototype.mouseUp = function (event) {
+	if (this.drag) {
+		if (!this.drag.moved) {
+			editCharge(this.drag.charge);
+		}
+	}
 	this.drag = null;
+}
+
+Stage.prototype.removeCharge = function (charge) {
+	var nc = new Array();
+	for (var i = 0; i < this.charges.length; i++) {
+		if (this.charges[i] != charge) {
+			nc.push(this.charges[i]);
+		}
+	}
+	this.charges = nc;
 }
 
 function DragContext (charge, pi, ci) {
 	this.charge = charge;
 	this.pi = pi;
 	this.ci = ci;
+	this.moved = false;
 }
 
 DragContext.prototype.handleDrag = function (point) {
+	this.moved = true;
 	var center = this.ci.add(point.sub(this.pi));
 	this.charge.pos = center;
 }
